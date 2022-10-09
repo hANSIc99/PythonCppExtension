@@ -15,13 +15,15 @@ find_package(PythonLibs 3.6 REQUIRED)
 #if(NUMPY_NOT_FOUND)
 #    message(FATAL_ERROR "NumPy headers not found")
 #endif()
+#set(SRCS "mymath.c" "myclass.cpp")
 set(SRCS "mymath.c")
 add_library(mymath SHARED ${SRCS})
 
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
-target_link_libraries(mymath ${PYTHON_LIBRARIES})
+#target_link_libraries(mymath ${PYTHON_LIBRARIES})
 
+# das wird benötigt
 set_target_properties(
     mymath
     PROPERTIES
