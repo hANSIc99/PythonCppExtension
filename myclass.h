@@ -6,6 +6,8 @@ class MyClass
 {
 public:
     MyClass();
+
+    virtual ~MyClass();
 };
 
 #endif // MYCLASS_H

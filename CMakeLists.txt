@@ -15,8 +15,8 @@ find_package(PythonLibs 3.6 REQUIRED)
 #if(NUMPY_NOT_FOUND)
 #    message(FATAL_ERROR "NumPy headers not found")
 #endif()
-#set(SRCS "mymath.c" "myclass.cpp")
-set(SRCS "mymath.c")
+set(SRCS "mymath.cpp" "myclass.cpp")
+#set(SRCS "mymath.cpp")
 add_library(mymath SHARED ${SRCS})
 
 find_package(PythonLibs REQUIRED)
@@ -29,5 +29,5 @@ set_target_properties(
     PROPERTIES
         PREFIX ""
         OUTPUT_NAME "mymath"
-        LINKER_LANGUAGE C
+        LINKER_LANGUAGE C # Egal ob hier C oder CXX steht
     )

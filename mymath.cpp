@@ -1,4 +1,5 @@
 #include <Python.h>
+#include "myclass.h"
 
 // This is the definition of a method
 static PyObject* division(PyObject *self, PyObject *args) {
