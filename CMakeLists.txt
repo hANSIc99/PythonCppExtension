@@ -16,12 +16,12 @@ find_package(PythonLibs 3.6 REQUIRED)
 #    message(FATAL_ERROR "NumPy headers not found")
 #endif()
 set(SRCS "mymath.cpp" "myclass.cpp")
-#set(SRCS "mymath.cpp")
 add_library(mymath SHARED ${SRCS})
+add_executable(PyDebug "pydbg.cpp")
 
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
-#target_link_libraries(mymath ${PYTHON_LIBRARIES})
+target_link_libraries(PyDebug ${PYTHON_LIBRARIES})
 
 # das wird benötigt
 set_target_properties(
@@ -29,5 +29,12 @@ set_target_properties(
     PROPERTIES
         PREFIX ""
         OUTPUT_NAME "mymath"
+        LINKER_LANGUAGE C # Egal ob hier C oder CXX steht
+    )
+set_target_properties(
+    PyDebug
+    PROPERTIES
+        PREFIX ""
+        OUTPUT_NAME "PyDebug"
         LINKER_LANGUAGE C # Egal ob hier C oder CXX steht
     )

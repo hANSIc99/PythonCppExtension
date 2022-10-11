@@ -3,9 +3,9 @@
 
 MyClass::MyClass()
 {
-    std::cout << __func__ << std::endl;
+    std::cout << "MyClass::MyClass() called!" << std::endl;
 }
 
 MyClass::~MyClass(){
-    std::cout << __func__ << std::endl;
+    std::cout << "MyClass::~MyClass() called" << std::endl;
 }

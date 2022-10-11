@@ -1,6 +1,8 @@
 #include <Python.h>
 #include "myclass.h"
 
+static MyClass* myclass;
+
 // This is the definition of a method
 static PyObject* division(PyObject *self, PyObject *args) {
     long dividend, divisor;
@@ -14,9 +16,16 @@ static PyObject* division(PyObject *self, PyObject *args) {
     return PyLong_FromLong(dividend / divisor);
 }
 
+static PyObject* init(PyObject *self, PyObject *args){
+    myclass = new MyClass();
+    return NULL;
+}
+
 // Exported methods are collected in a table
+// https://docs.python.org/3/c-api/structures.html
 PyMethodDef method_table[] = {
     {"division", (PyCFunction) division, METH_VARARGS, "Method docstring"},
+    {"init", (PyCFunction) init, METH_NOARGS, "Construct C++ Object"},
     {NULL, NULL, 0, NULL} // Sentinel value ending the table
 };
 
