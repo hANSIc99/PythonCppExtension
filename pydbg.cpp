@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <iostream>
+#include <fstream>
 #include <Python.h>
 
 // https://pythonextensionpatterns.readthedocs.io/en/latest/debugging/debug_in_ide.html
@@ -25,9 +26,14 @@ int main(int argc, char *argv[])
        If this step fails, it will be a fatal error. */
     Py_Initialize();
 
-    const char* script = R"(/home/stephan/Documents/PythonCppExtension/main.py)";
-    std::ifstream s_script(script);
-
+    const char* script_path = R"(/home/stephan/Documents/PythonCppExtension/main.py)";
+    //std::ifstream s_script(script, std::ios::binary);
+    // https://docs.python.org/3/c-api/veryhigh.html#c.PyRun_SimpleFile
+    FILE* script = fopen(script_path, "r");
+    if(script){
+        PyRun_SimpleFile(script, "main.py");
+    }
+    fclose(script);
 
 #if 0
     /* Optionally import the module; alternatively,

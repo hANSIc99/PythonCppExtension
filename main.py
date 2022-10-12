@@ -3,7 +3,7 @@ from inspect import getmembers
 
 print(getmembers(mymath))
 
-if(False):
+if(True):
     result = mymath.division(4, 2)
     if result == 2:
         print("Sucessfull")
