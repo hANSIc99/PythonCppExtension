@@ -10,8 +10,7 @@
 Start interpreter in 
 
 1. source init.sh
-2. python3
-3. import mymath
+2. python3 -i main.py
 
 ### Module function
 

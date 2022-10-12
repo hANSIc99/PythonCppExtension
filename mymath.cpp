@@ -1,7 +1,9 @@
 #include <Python.h>
+#include <iostream>
 #include "myclass.h"
 
 static MyClass* myclass;
+// https://stackoverflow.com/questions/8066438/how-to-dynamically-create-a-derived-type-in-the-python-c-api TODO
 
 // This is the definition of a method
 static PyObject* division(PyObject *self, PyObject *args) {
@@ -16,9 +18,18 @@ static PyObject* division(PyObject *self, PyObject *args) {
     return PyLong_FromLong(dividend / divisor);
 }
 
+static PyObject* setString(PyObject* self, PyObject *args){
+    if(PyDict_Check(args)){
+        std::cout << "Object is of type DICT" << std::endl;
+    } else {
+    std::cout << "Object is of NOT of type DICT" << std::endl;
+    }
+    Py_RETURN_NONE;
+}
+
 static PyObject* init(PyObject *self, PyObject *args){
     myclass = new MyClass();
-    return NULL;
+    return NULL; // Return new PyObject
 }
 
 // Exported methods are collected in a table
@@ -26,6 +37,7 @@ static PyObject* init(PyObject *self, PyObject *args){
 PyMethodDef method_table[] = {
     {"division", (PyCFunction) division, METH_VARARGS, "Method docstring"},
     {"init", (PyCFunction) init, METH_NOARGS, "Construct C++ Object"},
+    {"setString", (PyCFunction) setString, METH_VARARGS, "Write to passed string"},
     {NULL, NULL, 0, NULL} // Sentinel value ending the table
 };
 

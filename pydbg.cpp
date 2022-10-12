@@ -25,6 +25,11 @@ int main(int argc, char *argv[])
        If this step fails, it will be a fatal error. */
     Py_Initialize();
 
+    const char* script = R"(/home/stephan/Documents/PythonCppExtension/main.py)";
+    std::ifstream s_script(script);
+
+
+#if 0
     /* Optionally import the module; alternatively,
        import can be deferred until the embedded script
        imports it. */
@@ -74,7 +79,7 @@ int main(int argc, char *argv[])
     } else {
         std::cout << "Init called" << std::endl;
     }
-
+#endif
     PyMem_RawFree(program);
     return 0;
 }
