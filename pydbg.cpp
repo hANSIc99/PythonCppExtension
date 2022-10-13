@@ -1,9 +1,26 @@
 #include <cstddef>
 #include <iostream>
-#include <fstream>
 #include <Python.h>
+#include "set_string.h"
+#include "division.h"
 
 // https://pythonextensionpatterns.readthedocs.io/en/latest/debugging/debug_in_ide.html
+
+PyObject* get_func(PyObject *pmodule, const char* fName){
+
+    PyObject* pFunc = PyObject_GetAttrString(pmodule, fName);
+    if (!pFunc) {
+        std::cerr << "Cannot find function " << fName << std::endl;
+        return NULL;
+    }
+
+    if (!PyCallable_Check(pFunc)) {
+        std::cerr << "Function " << fName << " is not calable" << std::endl;
+        return NULL;
+    }
+    return pFunc;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -26,16 +43,14 @@ int main(int argc, char *argv[])
        If this step fails, it will be a fatal error. */
     Py_Initialize();
 
-    const char* script_path = R"(/home/stephan/Documents/PythonCppExtension/main.py)";
-    //std::ifstream s_script(script, std::ios::binary);
-    // https://docs.python.org/3/c-api/veryhigh.html#c.PyRun_SimpleFile
-    FILE* script = fopen(script_path, "r");
-    if(script){
-        PyRun_SimpleFile(script, "main.py");
-    }
-    fclose(script);
+//    const char* script_path = R"(/home/stephan/Documents/PythonCppExtension/main.py)";
+//    // https://docs.python.org/3/c-api/veryhigh.html#c.PyRun_SimpleFile
+//    FILE* script = fopen(script_path, "r");
+//    if(script){
+//        PyRun_SimpleFile(script, "main.py");
+//    }
+//    fclose(script);
 
-#if 0
     /* Optionally import the module; alternatively,
        import can be deferred until the embedded script
        imports it. */
@@ -45,32 +60,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error: could not import module 'mymath'\n");
     }
 
-    //
-    const char* sf_division = "division";
-    PyObject* pFunc_division = PyObject_GetAttrString(pmodule, sf_division);
-    if (!pFunc_division) {
-        std::cerr << "Cannot find function " << sf_division << std::endl;
-    }
+    test_division(get_func(pmodule, "division"));
+    test_setString(get_func(pmodule, "setString"));
 
-    if (!PyCallable_Check(pFunc_division)) {
-        std::cerr << "Function " << sf_division << " is not calable" << std::endl;
-    }
-
-//    PyObject *pResult = PyObject_CallNoArgs(pFunc_division);
-//    if (!pResult) {
-//        std::cerr << "Cannot call " << sf_division << " without arguments" << std::endl;
-//    }
-
-    PyObject *pResult = PyObject_CallObject(pFunc_division, Py_BuildValue("ll", 44, 2));
-    if (!pResult) {
-        std::cerr << "Cannot call " << sf_division << " with two integers" << std::endl;
-    } else {
-        long result = 0;
-        // https://docs.python.org/3/c-api/long.html
-        result = PyLong_AsLong(pResult);
-        //PyArg_ParseTuple(pResult, "l", &result);
-        std::cout << "The result is: " << result << std::endl;
-    }
 
     const char* sf_init = "init";
     PyObject* pFunc_init = PyObject_GetAttrString(pmodule, sf_init);
@@ -85,7 +77,7 @@ int main(int argc, char *argv[])
     } else {
         std::cout << "Init called" << std::endl;
     }
-#endif
+
     PyMem_RawFree(program);
     return 0;
 }

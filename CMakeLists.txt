@@ -23,7 +23,7 @@ add_library(mymath SHARED ${SRCS})
 add_executable(PyDebug "pydbg.cpp")
 
 find_package(PythonLibs REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${PYTHON_INCLUDE_DIRS} "tests/")
 target_link_libraries(PyDebug ${PYTHON_LIBRARIES})
 
 # das wird benötigt
