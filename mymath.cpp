@@ -22,9 +22,10 @@ static PyObject* setString(PyObject* self, PyObject *args){
     if(PyDict_Check(args)){
         std::cout << "Object is of type DICT" << std::endl;
     } else {
-    std::cout << "Object is of NOT of type DICT" << std::endl;
+        std::cout << "Object is of NOT of type DICT" << std::endl;
     }
-    Py_RETURN_NONE;
+
+    return PyUnicode_FromString("Hello World");
 }
 
 static PyObject* init(PyObject *self, PyObject *args){
@@ -36,7 +37,7 @@ static PyObject* init(PyObject *self, PyObject *args){
 // https://docs.python.org/3/c-api/structures.html
 PyMethodDef method_table[] = {
     {"division", (PyCFunction) division, METH_VARARGS, "Method docstring"},
-    {"init", (PyCFunction) init, METH_NOARGS, "Construct C++ Object"},
+    //{"init", (PyCFunction) init, METH_NOARGS, "Construct C++ Object"},
     {"setString", (PyCFunction) setString, METH_VARARGS, "Write to passed string"},
     {NULL, NULL, 0, NULL} // Sentinel value ending the table
 };

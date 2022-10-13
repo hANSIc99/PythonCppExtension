@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Cpp Extension",
+            "type": "lldb",
+            "request": "launch",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PATH" : "${env:PATH}:${command:cmake.launchTargetDirectory}",
+                "PYTHONPATH" : "${command:cmake.launchTargetDirectory}"
+            },
+            "preLaunchTask": "CMake: build",
+        }
+    ]
+}

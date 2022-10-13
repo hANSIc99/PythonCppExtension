@@ -22,8 +22,14 @@ PyObject* get_func(PyObject *pmodule, const char* fName){
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char *envp[])
 {
+    // for (char **env = envp; *env != 0; env++)
+    // {
+    //     char *thisEnv = *env;
+    //     printf("%s\n", thisEnv);    
+    // }
+    // return 0;
     wchar_t *program = Py_DecodeLocale(argv[0], NULL);
     if (program == NULL) {
         fprintf(stderr, "Fatal error: cannot decode argv[0]\n");
@@ -58,6 +64,7 @@ int main(int argc, char *argv[])
     if (!pmodule) {
         PyErr_Print();
         fprintf(stderr, "Error: could not import module 'mymath'\n");
+        return -1;
     }
 
     test_division(get_func(pmodule, "division"));
@@ -68,6 +75,7 @@ int main(int argc, char *argv[])
     PyObject* pFunc_init = PyObject_GetAttrString(pmodule, sf_init);
     if (!pFunc_init) {
         std::cerr << "Cannot find function " << sf_init << std::endl;
+        return -1;
     }
 
     // https://docs.python.org/3.10/c-api/call.html#c.PyObject_CallObject

@@ -16,6 +16,12 @@ void test_setString(PyObject *pFunc){
 
     std::string sBefore(PyUnicode_AsUTF8(argString));
     std::cout << "String before: \"" << sBefore << "\"" << std::endl;
-    int x = 3;
+
+    PyObject *pResult = PyObject_CallObject(pFunc, argString);
+    if (!pResult) {
+        std::cerr << "Cannot call setString" << std::endl;
+    } else {
+        std::cerr << "setString() called" << std::endl;
+    }
 }
 #endif
