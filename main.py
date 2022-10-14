@@ -9,3 +9,7 @@ if(True):
         print("Sucessfull")
     else:
         print("Error, Result: {}".format(result))
+
+print("\n\n")
+x = mymath.init()
+print(getmembers(x))
