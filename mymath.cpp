@@ -1,6 +1,7 @@
 #include <Python.h>
 #include <iostream>
 #include <cstring>
+#include <ostream>
 #include "methodobject.h"
 #include "myclass.h"
 #include "object.h"
@@ -12,7 +13,7 @@
 // https://github.com/python/cpython/blob/main/Modules/_testmultiphase.c
 // https://docs.python.org/3/extending/newtypes_tutorial.html
 
-static MyClass* myclass;
+//static MyClass* myclass;
 // https://stackoverflow.com/questions/64922768/can-a-python-heap-time-created-with-pytype-fromspec-be-weak-reference-compat
 // https://pythoncapi.readthedocs.io/type_object.html
 
@@ -21,6 +22,7 @@ typedef struct {
     PyObject_HEAD
     /* Type-specific fields go here. */
     // POINTER TO MYCLASS HERE ?
+    MyClass* m_myclass;
 } MyClassObject;
 
 static PyObject* ExampleFunc(PyObject *self, PyObject *args) {
@@ -32,7 +34,20 @@ static PyMethodDef Example_methods[] = {
     {NULL,              NULL}           /* sentinel */
 };
 
+void tp_finalize_my_class(PyObject *self){
+    std::cout << "Finalize called!!!" << std::endl;
+    //MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
+    //m->m_myclass->~MyClass();
+    //PyObject_Free(m->m_myclass);
+};
 
+static void tp_free_my_class(MyClassObject *self) {
+    std::cout << "Free called!!!" << std::endl;
+    PyTypeObject *tp = Py_TYPE(self);
+    // free references and buffers here
+    tp->tp_free(self);
+    Py_DECREF(tp);
+}
 
 static PyType_Slot PyMyClass_Type_slots[] = {
     // Possible slots
@@ -41,7 +56,8 @@ static PyType_Slot PyMyClass_Type_slots[] = {
     // https://docs.python.org/3/c-api/typeobj.html#typedef-examples
     //{Py_tp_doc, (void*)PyDoc_STR("Custom object 123") },
     //{Py_tp_dealloc, PyCursesPanel_Dealloc},
-    //{Py_tp_d}
+    {Py_tp_free, (void*)tp_free_my_class},
+    //{Py_tp_finalize, (void*)tp_finalize_my_class},
     {Py_tp_methods, Example_methods},
     {0, 0},
 };
@@ -90,15 +106,19 @@ static PyObject* setString(PyObject* self, PyObject *args){
 
 static PyObject* init(PyObject *self, PyObject *args){
     // https://docs.python.org/3/c-api/memory.html
-    MyClass* myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
-    new (myclass) MyClass();
+    MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
+
+    m->m_myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
+    new (m->m_myclass) MyClass();
+    //MyClass* myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
+    //new (myclass) MyClass();
 
     PyType_Spec spec_myclass = {
         "mymath.DeviceManager", // tp_name
         // https://docs.python.org/3/c-api/typeobj.html#c.PyTypeObject.tp_basicsize
         sizeof(MyClassObject), // tp_basicsize
         0, // itemsize vor variable sized objects // TODO
-        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE,
+        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_FINALIZE,
         PyMyClass_Type_slots // slots
     };
 
@@ -113,10 +133,10 @@ static PyObject* init(PyObject *self, PyObject *args){
     if (temp == NULL) {
         return NULL;
     }
-    if (PyModule_AddObject(self, "StateAccessType", temp) != 0) {
-        Py_DECREF(temp);
-        return NULL;
-    }
+    // if (PyModule_AddObject(self, "StateAccessType", temp) != 0) {
+    //     Py_DECREF(temp);
+    //     return NULL;
+    // }
     Py_INCREF(temp);
     return temp;
 }

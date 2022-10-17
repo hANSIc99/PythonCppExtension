@@ -2,6 +2,7 @@
 #define DIVISION_H
 
 #include <Python.h>
+#include <iostream>
 
 void test_division(PyObject *pFunc){
 
