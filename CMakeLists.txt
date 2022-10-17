@@ -18,7 +18,7 @@ find_package(PythonLibs 3.6 REQUIRED)
 #if(NUMPY_NOT_FOUND)
 #    message(FATAL_ERROR "NumPy headers not found")
 #endif()
-set(SRCS "mymath.cpp" "myclass.cpp")
+set(SRCS "my_module.cpp" "myclass.cpp")
 add_library(mymath SHARED ${SRCS})
 add_executable(PyDebug "pydbg.cpp")
 
@@ -31,7 +31,7 @@ set_target_properties(
     mymath
     PROPERTIES
         PREFIX ""
-        OUTPUT_NAME "mymath"
+        OUTPUT_NAME "MyModule"
         LINKER_LANGUAGE C # Egal ob hier C oder CXX steht
     )
 set_target_properties(

@@ -26,6 +26,7 @@ void test_myclass(PyObject *pFunc){
     PyObject *pMyClass = PyObject_CallObject(pFunc, NULL);
     if (!pMyClass) {
         std::cerr << "Cannot call init()" << std::endl;
+        return;
     } else {
         std::cout << "Init called" << std::endl;
     }

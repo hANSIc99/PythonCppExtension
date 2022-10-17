@@ -49,7 +49,7 @@ int main(int argc, char *argv[], char *envp[])
     /* Optionally import the module; alternatively,
        import can be deferred until the embedded script
        imports it. */
-    PyObject *pmodule = PyImport_ImportModule("mymath");
+    PyObject *pmodule = PyImport_ImportModule("MyModule");
     if (!pmodule) {
         PyErr_Print();
         fprintf(stderr, "Error: could not import module 'mymath'\n");
