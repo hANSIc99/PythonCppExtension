@@ -192,7 +192,6 @@ static PyObject* init(PyObject *self, PyObject *args){
     // https://docs.python.org/3/c-api/memory.html
     
 
-
     //MyClass* myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
     //new (myclass) MyClass();
 
