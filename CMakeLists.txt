@@ -19,7 +19,7 @@ find_package(PythonLibs 3.6 REQUIRED)
 #    message(FATAL_ERROR "NumPy headers not found")
 #endif()
 set(SRCS "my_module.cpp" "myclass.cpp")
-add_library(mymath SHARED ${SRCS})
+add_library(MyModule SHARED ${SRCS})
 add_executable(PyDebug "pydbg.cpp")
 
 find_package(PythonLibs REQUIRED)
@@ -28,7 +28,7 @@ target_link_libraries(PyDebug ${PYTHON_LIBRARIES})
 
 # das wird benötigt
 set_target_properties(
-    mymath
+    MyModule
     PROPERTIES
         PREFIX ""
         OUTPUT_NAME "MyModule"

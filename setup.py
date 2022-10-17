@@ -85,8 +85,8 @@ class CMakeBuild(build_ext):
 
 
 
-setup(name = "mymath",
+setup(name = "MyModule",
       version = "0.1",
-      ext_modules = [CMakeExtension("mymath")],
+      ext_modules = [CMakeExtension("MyModule")],
       cmdclass = {'build_ext': CMakeBuild}
       );
