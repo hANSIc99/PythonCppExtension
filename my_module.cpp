@@ -4,6 +4,7 @@
 #include <ostream>
 #include <sstream>
 #include "methodobject.h"
+#include "modsupport.h"
 #include "myclass.h"
 #include "object.h"
 #include "pyport.h"
@@ -21,60 +22,18 @@
 // Debugging
 // https://llllllllll.github.io/c-extension-tutorial/gdb.html
 
+
 typedef struct {
     PyObject_HEAD
     int value;
-} HeapCTypeObject;
+    MyClass* m_myclass;
+} MyClassObject;
 
-//static extern "C"
-static int
-heapctype_init(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    std::cout << "Init called" << std::endl;
-    ((HeapCTypeObject *)self)->value = 10;
-    return 0;
-}
-
-static struct PyMemberDef heapctype_members[] = {
-    {"value", T_INT, offsetof(HeapCTypeObject, value)},
+static struct PyMemberDef MyClass_members[] = {
+    {"value", T_INT, offsetof(MyClassObject, value)},
     {NULL} /* Sentinel */
 };
 
-static void
-heapctype_dealloc(HeapCTypeObject *self)
-{
-    std::cout << "dealloc called" << std::endl;
-    PyTypeObject *tp = Py_TYPE(self);
-    PyObject_Free(self);
-    Py_DECREF(tp);
-}
-
-PyDoc_STRVAR(heapctype__doc__,
-"A heap type without GC, but with overridden dealloc.\n\n"
-"The 'value' attribute is set to 10 in __init__.");
-
-static PyType_Slot HeapCType_slots[] = {
-    {Py_tp_init, (void*)heapctype_init},
-    {Py_tp_members, heapctype_members},
-    {Py_tp_dealloc, (void*)heapctype_dealloc},
-    {Py_tp_doc, (char*)heapctype__doc__},
-    {0, 0},
-};
-
-static PyType_Spec HeapCType_spec = {
-    "MyModule.HeapCType",
-    sizeof(HeapCTypeObject),
-    0,
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
-    HeapCType_slots
-};
-
-typedef struct {
-    PyObject_HEAD
-    /* Type-specific fields go here. */
-    // POINTER TO MYCLASS HERE ?
-    MyClass* m_myclass;
-} MyClassObject;
 
 static PyObject* ExampleFunc(PyObject *self, PyObject *args) {
     std::stringstream ss;
@@ -88,24 +47,11 @@ static PyMethodDef MyClass_methods[] = {
     {NULL,              NULL}           /* sentinel */
 };
 
-void MyClass_finalize(PyObject *self){
-    std::cout << "Finalize called!!!" << std::endl;
-    //MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
-    //m->m_myclass->~MyClass();
-    //PyObject_Free(m->m_myclass);
-};
-
-
-static void MyClass_free(PyObject *self) {
-    std::cout << "Free called!!!" << std::endl;
-    //PyTypeObject *tp = Py_TYPE(self);
-    // free references and buffers here
-    //tp->tp_free(self);
-    //Py_DECREF(tp);
-};
 
 int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds){
     std::cout << "Init called!!!" << std::endl;
+    ((MyClassObject *)self)->value = 10;
+    // Instantiate class ?
     return 0;
 }
 
@@ -113,9 +59,10 @@ static void MyClass_Dealloc(MyClassObject *self){
     std::cout << "MyClass_dealloc() called!!!" << std::endl;
     PyTypeObject *tp = Py_TYPE(self);
     // free references and buffers here
-    MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
-    m->m_myclass->~MyClass();
-    PyObject_Free(m->m_myclass);
+    //MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
+    //m->m_myclass->~MyClass();
+
+    //PyObject_Free(m->m_myclass);
 
     tp->tp_free(self);
     Py_DECREF(tp);
@@ -131,14 +78,13 @@ static PyType_Slot PyMyClass_Type_slots[] = {
     //{Py_tp_new, (void*)MyClass_new},
     {Py_tp_init, (void*)MyClass_init},
     {Py_tp_dealloc, (void*)MyClass_Dealloc},
-    //{Py_tp_free, (void*)MyClass_free}, // wird von dealloc aufgerufen
-    //{Py_tp_finalize, (void*)MyClass_finalize}, // wird nicht benoetigt
+    {Py_tp_members,  MyClass_members},
     {Py_tp_methods, MyClass_methods},
     {0, 0},
 };
 
 static PyType_Spec spec_myclass = {
-    "MyModule.MyClass", // tp_name
+    "MyClass", // tp_name
     // https://docs.python.org/3/c-api/typeobj.html#c.PyTypeObject.tp_basicsize
     sizeof(MyClassObject), // tp_basicsize
     //0, // itemsize vor variable sized objects // TODO
@@ -188,55 +134,11 @@ static PyObject* setString(PyObject* self, PyObject *args){
     return PyUnicode_FromString("Hello World");
 }
 
-static PyObject* init(PyObject *self, PyObject *args){
-    // https://docs.python.org/3/c-api/memory.html
-    
-
-    //MyClass* myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
-    //new (myclass) MyClass();
-
-
-
-
-    //PyObject *pypbjDevMan = PyType_F
-    // later:
-    //myclass->~MyClass();
-    //PyObject_Free(myclass);
-    // https://docs.python.org/3/c-api/typeobj.html#heap-types
-
-    //PyObject *temp = PyType_FromModuleAndSpec(self, &spec_myclass, NULL);
-    // PyObject *temp = PyType_FromSpec(&spec_myclass);
-    // if (temp == NULL) {
-    //     std::cout << "MyClass heap creation failed" << std::endl;
-    //     return NULL;
-    // } else {
-    //     std::cout << "MyClass creation successfull" << std::endl;
-    //     MyClassObject* m = reinterpret_cast<MyClassObject*>(temp);
-    //     m->m_myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
-    //     new (m->m_myclass) MyClass();
-    //     //Py_INCREF(temp);
-    //     //Py_DECREF(temp);
-    //     //Py_DECREF(temp);
-    //     //Py_DECREF(temp);
-    // }
-    // if (PyModule_AddObject(self, "StateAccessType", temp) != 0) {
-    //     Py_DECREF(temp);
-    //     return NULL;
-    // }
-    
-    PyObject *HeapCType = PyType_FromSpec(&HeapCType_spec);
-    // PyObject *subclass_bases = PyTuple_Pack(1, HeapCType);
-    // if (subclass_bases == NULL) {
-    //     return NULL;
-    // }
-    return HeapCType;
-}
 
 // Exported methods are collected in a table
 // https://docs.python.org/3/c-api/structures.html
 PyMethodDef method_table[] = {
     {"division", (PyCFunction) division, METH_VARARGS, "Method docstring"},
-    {"init", (PyCFunction) init, METH_NOARGS, "Construct C++ Object"},
     {"setString", (PyCFunction) setString, METH_VARARGS, "Write to passed string"},
     {NULL, NULL, 0, NULL} // Sentinel value ending the table
 };
@@ -258,5 +160,22 @@ PyModuleDef mymod_module = {
 // Der interpreter sucht nach dieser funktion
 PyMODINIT_FUNC 
 PyInit_MyModule(void) {
-    return PyModule_Create(&mymod_module);
+    
+    PyObject* module = PyModule_Create(&mymod_module);
+
+
+    // Only creates a type
+    PyObject *myclass = PyType_FromSpec(&spec_myclass);
+    if (myclass == NULL){
+        return NULL;
+    }
+    Py_INCREF(myclass);
+
+    if(PyModule_AddObject(module, "MyClass", myclass) < 0){
+        Py_DECREF(myclass);
+        Py_DECREF(module);
+        return NULL;
+    }
+
+    return module;
 }
