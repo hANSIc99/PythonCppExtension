@@ -11,6 +11,7 @@
 #include "tupleobject.h"
 #include "unicodeobject.h"
 #include <structmember.h>
+#include "another_pyobject.h"
 // Wichtig
 // https://github.com/python/cpython/blob/main/Modules/_testmultiphase.c
 // https://docs.python.org/3/extending/newtypes_tutorial.html
@@ -19,6 +20,8 @@
 // https://stackoverflow.com/questions/64922768/can-a-python-heap-time-created-with-pytype-fromspec-be-weak-reference-compat
 // https://pythoncapi.readthedocs.io/type_object.html
 
+// Memory Management
+// https://docs.python.org/3/c-api/memory.html
 // Debugging
 // https://llllllllll.github.io/c-extension-tutorial/gdb.html
 
@@ -51,7 +54,29 @@ static PyMethodDef MyClass_methods[] = {
 int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds){
     std::cout << "Init called!!!" << std::endl;
     ((MyClassObject *)self)->value = 10;
-    // Instantiate class ?
+    
+    MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
+    m->m_myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
+    new (m->m_myclass) MyClass();
+
+
+    // Add Object dynamicalli
+
+    // Only creates a type
+    PyObject *additional_ob = PyType_FromSpec(&spec_another_object);
+    if (additional_ob == NULL){
+        return -1;
+    }
+
+    PyObject *obj = PyObject_CallObject((PyObject *) additional_ob, PyTuple_Pack(1, Py_None));
+
+    
+    //PyObject* additional_instance = _PyObject_New((PyTypeObject*)additional_ob);
+
+    //PyObject* initialized = PyObject_Init(additional_instance, (PyTypeObject*)additional_ob);
+    
+    //int nErr = PyObject_SetAttr(self, PyUnicode_FromString("anotherObj"), additional_ob);
+    //return nErr;
     return 0;
 }
 
@@ -59,16 +84,15 @@ static void MyClass_Dealloc(MyClassObject *self){
     std::cout << "MyClass_dealloc() called!!!" << std::endl;
     PyTypeObject *tp = Py_TYPE(self);
     // free references and buffers here
-    //MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
-    //m->m_myclass->~MyClass();
-
-    //PyObject_Free(m->m_myclass);
+    MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
+    m->m_myclass->~MyClass();
+    PyObject_Free(m->m_myclass);
 
     tp->tp_free(self);
     Py_DECREF(tp);
 };
 
-static PyType_Slot PyMyClass_Type_slots[] = {
+static PyType_Slot MyClass_slots[] = {
     // Possible slots
     // https://docs.python.org/3/c-api/typeobj.html
     // Slot examples
@@ -90,7 +114,7 @@ static PyType_Spec spec_myclass = {
     //0, // itemsize vor variable sized objects // TODO
     sizeof(MyClass),
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
-    PyMyClass_Type_slots // slots
+    MyClass_slots // slots
 };
 
 // https://stackoverflow.com/questions/8066438/how-to-dynamically-create-a-derived-type-in-the-python-c-api TODO
