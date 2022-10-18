@@ -63,12 +63,12 @@ int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds){
     // Add Object dynamicalli
 
     // Only creates a type
-    PyObject *additional_ob = PyType_FromSpec(&spec_another_object);
-    if (additional_ob == NULL){
-        return -1;
-    }
+    //PyObject *additional_ob = PyType_FromSpec(&spec_another_object);
+    // if (additional_ob == NULL){
+    //     return -1;
+    // }
 
-    PyObject *obj = PyObject_CallObject((PyObject *) additional_ob, PyTuple_Pack(1, Py_None));
+    //PyObject *obj = PyObject_CallObject((PyObject *) additional_ob, PyTuple_Pack(1, Py_None));
 
     
     //PyObject* additional_instance = _PyObject_New((PyTypeObject*)additional_ob);
