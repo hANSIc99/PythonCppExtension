@@ -1,4 +1,4 @@
-#include "myclass.h"
+#include "my_cpp_class.h"
 #include <iostream>
 
 MyClass::MyClass()

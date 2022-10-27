@@ -18,12 +18,12 @@ find_package(PythonLibs 3.6 REQUIRED)
 #if(NUMPY_NOT_FOUND)
 #    message(FATAL_ERROR "NumPy headers not found")
 #endif()
-set(SRCS "my_module.cpp" "myclass.cpp")
+set(SRCS "my_py_module.cpp" "my_class_py_type.cpp" "my_cpp_class.cpp")
 add_library(MyModule SHARED ${SRCS})
 add_executable(PyDebug "pydbg.cpp")
 
 find_package(PythonLibs REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS} "tests/")
+#include_directories(${PYTHON_INCLUDE_DIRS} "tests/")
 target_link_libraries(PyDebug ${PYTHON_LIBRARIES})
 
 # das wird benötigt
@@ -33,6 +33,8 @@ set_target_properties(
         PREFIX ""
         OUTPUT_NAME "MyModule"
         LINKER_LANGUAGE C # Egal ob hier C oder CXX steht
+        LINK_LIBRARIES "${PYTHON_LIBRARIES}"
+        INCLUDE_DIRECTORIES "/usr/include/python3.9;${PYTHON_INCLUDE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/tests"
     )
 set_target_properties(
     PyDebug
@@ -40,4 +42,5 @@ set_target_properties(
         PREFIX ""
         OUTPUT_NAME "PyDebug"
         LINKER_LANGUAGE C # Egal ob hier C oder CXX steht
+        INCLUDE_DIRECTORIES "/usr/include/python3.9;${PYTHON_INCLUDE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/tests"
     )
