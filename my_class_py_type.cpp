@@ -17,6 +17,7 @@ PyObject *MyClass_new(PyTypeObject *type, PyObject *args, PyObject *kwds){
 
 int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds){
     
+    std::cout << "MyClass_init() called!" << std::endl;
     ((MyClassObject *)self)->m_value = 123;
     
     MyClassObject* m = (MyClassObject*)self;
@@ -39,17 +40,17 @@ int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds){
         PyObject_Free(m->m_myclass);
         m->m_myclass = NULL;
         m->m_value   = 0;
-        PyErr_SetString(PyExc_RuntimeError, "Initialiyation failed");
+        PyErr_SetString(PyExc_RuntimeError, "Initialization failed");
         return -1;
     }
 
     return 0;
 }
 
-void MyClass_Dealloc(MyClassObject *self){
+void MyClass_dealloc(MyClassObject *self){
     std::cout << "MyClass_dealloc() called!" << std::endl;
     PyTypeObject *tp = Py_TYPE(self);
-    // free references and buffers here
+
     MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
 
     if(m->m_myclass){
@@ -57,7 +58,14 @@ void MyClass_Dealloc(MyClassObject *self){
         PyObject_Free(m->m_myclass);
     }
 
-
     tp->tp_free(self);
     Py_DECREF(tp);
 };
+
+PyObject* MyClass_addOne(PyObject *self, PyObject *args){
+    assert(self);
+
+    MyClassObject* _self = reinterpret_cast<MyClassObject*>(self);
+    unsigned long val = _self->m_myclass->addOne();
+    return PyLong_FromUnsignedLong(val);
+}

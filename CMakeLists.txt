@@ -20,7 +20,7 @@ find_package(PythonLibs 3.6 REQUIRED)
 #if(NUMPY_NOT_FOUND)
 #    message(FATAL_ERROR "NumPy headers not found")
 #endif()
-set(SRCS "my_py_module.cpp" "my_class_py_type.cpp" "my_cpp_class.cpp")
+set(SRCS "my_py_module.cpp" "my_class_py_type.cpp")
 add_library(MyModule SHARED ${SRCS})
 add_executable(PyDebug "pydbg.cpp")
 
