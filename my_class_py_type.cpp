@@ -1,4 +1,5 @@
 #include "my_class_py_type.h"
+#include <exception>
 
 
 PyObject *MyClass_new(PyTypeObject *type, PyObject *args, PyObject *kwds){
@@ -15,13 +16,32 @@ PyObject *MyClass_new(PyTypeObject *type, PyObject *args, PyObject *kwds){
 }
 
 int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds){
-    std::cout << "MyClass_init() called!" << std::endl;
     
-    ((MyClassObject *)self)->m_value = 0;
+    ((MyClassObject *)self)->m_value = 123;
     
-    MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
+    MyClassObject* m = (MyClassObject*)self;
     m->m_myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
-    new (m->m_myclass) MyClass();
+
+    if(!m->m_myclass){
+        PyErr_SetString(PyExc_RuntimeError, "Memory allocation failed");
+        return -1;
+    }
+
+    try {
+        new (m->m_myclass) MyClass();
+    } catch (const std::exception& ex) {
+        PyObject_Free(m->m_myclass);
+        m->m_myclass = NULL;
+        m->m_value   = 0;
+        PyErr_SetString(PyExc_RuntimeError, ex.what());
+        return -1;
+    } catch(...) {
+        PyObject_Free(m->m_myclass);
+        m->m_myclass = NULL;
+        m->m_value   = 0;
+        PyErr_SetString(PyExc_RuntimeError, "Initialiyation failed");
+        return -1;
+    }
 
     return 0;
 }
@@ -31,8 +51,12 @@ void MyClass_Dealloc(MyClassObject *self){
     PyTypeObject *tp = Py_TYPE(self);
     // free references and buffers here
     MyClassObject* m = reinterpret_cast<MyClassObject*>(self);
-    m->m_myclass->~MyClass();
-    PyObject_Free(m->m_myclass);
+
+    if(m->m_myclass){
+        m->m_myclass->~MyClass();
+        PyObject_Free(m->m_myclass);
+    }
+
 
     tp->tp_free(self);
     Py_DECREF(tp);

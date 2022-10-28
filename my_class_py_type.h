@@ -4,6 +4,7 @@
 #include <Python.h>
 #include <iostream>
 #include <sstream>
+#include <optional>
 #include <structmember.h>
 
 #include "my_cpp_class.h"
@@ -12,6 +13,8 @@ typedef struct {
     PyObject_HEAD
     int         m_value;
     MyClass*    m_myclass;
+    // https://stackoverflow.com/questions/40022572/offsetof-alternative-for-modern-c darauf hinweisen
+    //std::optional<MyClass> m_myclass;
 } MyClassObject;
 
 int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds);
@@ -25,35 +28,34 @@ static PyMethodDef MyClass_methods[] = {
 
 
 
-
 // Create normal object
 static struct PyMemberDef MyClass_members[] = {
     {"value", T_INT, offsetof(MyClassObject, m_value)},
-    //{"anotherObj", T_OBJECT, offsetof(MyClassObject, m_anotherObj)},
     {NULL} /* Sentinel */
 };
 
+// Possible slots
+// https://docs.python.org/3/c-api/typeobj.html
+// Slot examples
+// https://docs.python.org/3/c-api/typeobj.html#typedef-examples
+//{Py_tp_doc, (void*)PyDoc_STR("Custom object 123") },
+//{Py_tp_dealloc, PyCursesPanel_Dealloc},
+//{Py_tp_setattro, (void*)PyObject_GenericSetAttr},
+
 static PyType_Slot MyClass_slots[] = {
-    // Possible slots
-    // https://docs.python.org/3/c-api/typeobj.html
-    // Slot examples
-    // https://docs.python.org/3/c-api/typeobj.html#typedef-examples
-    //{Py_tp_doc, (void*)PyDoc_STR("Custom object 123") },
-    //{Py_tp_dealloc, PyCursesPanel_Dealloc},
     {Py_tp_new, (void*)MyClass_new},
-    //{Py_tp_setattro, (void*)PyObject_GenericSetAttr},
     {Py_tp_init, (void*)MyClass_init},
     {Py_tp_dealloc, (void*)MyClass_Dealloc},
-    //{Py_tp_members,  MyClass_members},
+    {Py_tp_members,  MyClass_members},
     {Py_tp_methods, MyClass_methods},
     {0, 0},
 };
 
 static PyType_Spec spec_myclass = {
     "MyClass",                                  // name
-    sizeof(MyClassObject),                      // basicsize
+    sizeof(MyClassObject) + sizeof(MyClass),    // basicsize
     0,                                          // itemsize
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   //flags
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   // flags
     MyClass_slots                               // slots
 };
 
