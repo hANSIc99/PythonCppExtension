@@ -9,13 +9,11 @@
 
 #include "methodobject.h"
 #include "my_cpp_class.h"
-
+#include <memory>
 typedef struct {
     PyObject_HEAD
     int         m_value;
     MyClass*    m_myclass;
-    // https://stackoverflow.com/questions/40022572/offsetof-alternative-for-modern-c darauf hinweisen
-    //std::optional<MyClass> m_myclass;
 } MyClassObject;
 
 int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds);
@@ -25,7 +23,7 @@ PyObject* MyClass_addOne(PyObject *self, PyObject *args);
 
 static PyMethodDef MyClass_methods[] = {
     {"addOne", (PyCFunction)MyClass_addOne, METH_NOARGS,  PyDoc_STR("Return an incrmented integer")},
-    {NULL, NULL} /* sentinel */
+    {NULL, NULL} /* Sentinel */
 };
 
 
@@ -49,7 +47,7 @@ static PyType_Slot MyClass_slots[] = {
     {Py_tp_dealloc, (void*)MyClass_dealloc},
     {Py_tp_members,  MyClass_members},
     {Py_tp_methods, MyClass_methods},
-    {0, 0},
+    {0, 0}
 };
 
 static PyType_Spec spec_myclass = {
