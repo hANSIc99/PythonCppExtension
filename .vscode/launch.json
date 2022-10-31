@@ -2,6 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Interpreter Session",
+            "type": "lldb",
+            "request": "launch",
+            // Resolved by CMake Tools:
+            "program": "python3",
+            "args": ["-i", "main.py"],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH" : "${command:cmake.launchTargetDirectory}"
+            },
+            "preLaunchTask": "CMake: build",
+        },
+        {
             "name": "Debug Cpp Extension",
             "type": "lldb",
             "request": "launch",
