@@ -5,7 +5,6 @@
             "name": "Debug Interpreter Session",
             "type": "lldb",
             "request": "launch",
-            // Resolved by CMake Tools:
             "program": "python3",
             "args": ["-i", "main.py"],
             "cwd": "${workspaceFolder}",

@@ -18,9 +18,9 @@ PyObject *MyClass_new(PyTypeObject *type, PyObject *args, PyObject *kwds){
 int MyClass_init(PyObject *self, PyObject *args, PyObject *kwds){
     
     std::cout << "MyClass_init() called!" << std::endl;
-    ((MyClassObject *)self)->m_value = 123;
-    
     MyClassObject* m = (MyClassObject*)self;
+
+    m->m_value = 123
     m->m_myclass = (MyClass*)PyObject_Malloc(sizeof(MyClass));
 
     if(!m->m_myclass){
