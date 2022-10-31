@@ -1,3 +1,4 @@
+#include <Python.h>
 #include "my_class_py_type.h"
 #include <exception>
 
