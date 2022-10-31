@@ -6,25 +6,25 @@ To configure the build, CMake is required
 
 ### Using Python
 
- ```bash
- python3 setup.py build
- ```
+```bash
+python3 setup.py build
+```
 
- ### Invoke CMake manually
+### Invoke CMake manually
 
-  ```bash
+```bash
 cmake -B build
 cmake --build build
- ```
+```
 
 ## Debugging
 
 ### GDB
 
 Start a GDB session
-  ```bash
+```bash
 ./gdb.sh
-  ```bash
+```
 ### C++ application
 
 Alternatively, debug the application `pydbg.cpp` which embeds the Python interpreter and imports the module.
@@ -32,6 +32,6 @@ Alternatively, debug the application `pydbg.cpp` which embeds the Python interpr
 ## Python
 
 Start an interactive Python session:
-  ```bash
+```bash
 ./init.sh
- ```
+```
