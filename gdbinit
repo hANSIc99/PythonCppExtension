@@ -3,8 +3,6 @@
 
 set breakpoint pending on
 
-
-
 # Breakpoints
 break MyClass_new
 break MyClass_init
