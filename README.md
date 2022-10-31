@@ -24,7 +24,7 @@ cmake --build build
 Start a GDB session
   ```bash
 ./gdb.sh
-
+  ```bash
 ### C++ application
 
 Alternatively, debug the application `pydbg.cpp` which embeds the Python interpreter and imports the module.
@@ -35,8 +35,3 @@ Start an interactive Python session:
   ```bash
 ./init.sh
  ```
-### Module function
-
-- mymath.division(4, 2)
-
-### Return Tuple
