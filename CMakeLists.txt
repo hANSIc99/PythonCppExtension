@@ -11,7 +11,8 @@ add_library(MyModule SHARED ${SRCS})
 add_executable(PyDebug "pydbg.cpp")
 
 #find_package(PythonLibs REQUIRED)
-find_package (Python COMPONENTS Development)
+#find_package (Python COMPONENTS Development.Module)
+find_package(Python3 COMPONENTS Development.Module)
 target_link_libraries(PyDebug ${Python_LIBRARIES})
 target_link_libraries(MyModule ${Python_LIBRARIES})
 
