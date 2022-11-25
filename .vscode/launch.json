@@ -3,10 +3,10 @@
     "configurations": [
         {
             "name": "Debug setup.py",
-            "type": "lldb",
+            "type": "python",
             "request": "launch",
-            "program": "python3",
-            "args": ["setup.py"],
+            "program": "setup.py",
+            "args": ["build"],
             "cwd": "${workspaceFolder}",
         },
         {
