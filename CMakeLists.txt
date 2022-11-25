@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.19.7)
 project(PythonCppExtension)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,9 +10,10 @@ set(SRCS "my_py_module.cpp" "my_class_py_type.cpp")
 add_library(MyModule SHARED ${SRCS})
 add_executable(PyDebug "pydbg.cpp")
 
-find_package(PythonLibs REQUIRED)
-target_link_libraries(PyDebug ${PYTHON_LIBRARIES})
-target_link_libraries(MyModule ${PYTHON_LIBRARIES})
+#find_package(PythonLibs REQUIRED)
+find_package (Python COMPONENTS Development)
+target_link_libraries(PyDebug ${Python_LIBRARIES})
+target_link_libraries(MyModule ${Python_LIBRARIES})
 
 set_target_properties(
     MyModule
@@ -20,7 +21,7 @@ set_target_properties(
         PREFIX ""
         OUTPUT_NAME "MyModule"
         LINKER_LANGUAGE C
-        INCLUDE_DIRECTORIES "/usr/include/python3.9;${PYTHON_INCLUDE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/tests"
+        INCLUDE_DIRECTORIES "/usr/include/python3.9;${Python_INCLUDE_DIRS};${CMAKE_CURRENT_SOURCE_DIR}/tests"
         # COMPILE_DEFINITIONS "Py_LIMITED_API=0x03090000" # (broke in default installation)
     )
 set_target_properties(
@@ -29,7 +30,7 @@ set_target_properties(
         PREFIX ""
         OUTPUT_NAME "PyDebug"
         LINKER_LANGUAGE C
-        INCLUDE_DIRECTORIES "/usr/include/python3.9;${PYTHON_INCLUDE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/tests"
+        INCLUDE_DIRECTORIES "/usr/include/python3.9;${Python_INCLUDE_DIRS};${CMAKE_CURRENT_SOURCE_DIR}/tests"
     )
 
 
