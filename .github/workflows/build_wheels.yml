@@ -17,7 +17,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.2
         env:
-          CIBW_BEFORE_ALL_LINUX: yum install -y python3-devel
+          CIBW_BEFORE_ALL_LINUX: apt-get -y install python3-dev
         #   CIBW_SOME_OPTION: value
         #    ...
         # with:
