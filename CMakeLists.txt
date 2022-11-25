@@ -13,8 +13,8 @@ add_executable(PyDebug "pydbg.cpp")
 #find_package(PythonLibs REQUIRED)
 #find_package (Python COMPONENTS Development.Module)
 find_package(Python3 COMPONENTS Development.Module)
-target_link_libraries(PyDebug ${Python_LIBRARIES})
-target_link_libraries(MyModule ${Python_LIBRARIES})
+target_link_libraries(PyDebug ${Python3_LIBRARIES})
+target_link_libraries(MyModule ${Python3_LIBRARIES})
 
 set_target_properties(
     MyModule
@@ -22,7 +22,7 @@ set_target_properties(
         PREFIX ""
         OUTPUT_NAME "MyModule"
         LINKER_LANGUAGE C
-        INCLUDE_DIRECTORIES "/usr/include/python3.9;${Python_INCLUDE_DIRS};${CMAKE_CURRENT_SOURCE_DIR}/tests"
+        INCLUDE_DIRECTORIES "/usr/include/python3.9;${Python3_INCLUDE_DIRS};${CMAKE_CURRENT_SOURCE_DIR}/tests"
         # COMPILE_DEFINITIONS "Py_LIMITED_API=0x03090000" # (broke in default installation)
     )
 set_target_properties(
@@ -31,7 +31,7 @@ set_target_properties(
         PREFIX ""
         OUTPUT_NAME "PyDebug"
         LINKER_LANGUAGE C
-        INCLUDE_DIRECTORIES "/usr/include/python3.9;${Python_INCLUDE_DIRS};${CMAKE_CURRENT_SOURCE_DIR}/tests"
+        INCLUDE_DIRECTORIES "/usr/include/python3.9;${Python3_INCLUDE_DIRS};${CMAKE_CURRENT_SOURCE_DIR}/tests"
     )
 
 
