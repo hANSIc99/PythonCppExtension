@@ -12,6 +12,7 @@ add_executable(PyDebug "pydbg.cpp")
 
 find_package(PythonLibs REQUIRED)
 target_link_libraries(PyDebug ${PYTHON_LIBRARIES})
+target_link_libraries(MyModule ${PYTHON_LIBRARIES})
 
 set_target_properties(
     MyModule
@@ -19,7 +20,6 @@ set_target_properties(
         PREFIX ""
         OUTPUT_NAME "MyModule"
         LINKER_LANGUAGE C
-        LINK_LIBRARIES "${PYTHON_LIBRARIES}"
         INCLUDE_DIRECTORIES "/usr/include/python3.9;${PYTHON_INCLUDE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/tests"
         # COMPILE_DEFINITIONS "Py_LIMITED_API=0x03090000" # (broke in default installation)
     )
@@ -31,3 +31,12 @@ set_target_properties(
         LINKER_LANGUAGE C
         INCLUDE_DIRECTORIES "/usr/include/python3.9;${PYTHON_INCLUDE_DIR};${CMAKE_CURRENT_SOURCE_DIR}/tests"
     )
+
+
+if (WIN32)
+    set_target_properties(
+        MyModule
+        PROPERTIES
+            SUFFIX ".pyd"
+    )
+endif()

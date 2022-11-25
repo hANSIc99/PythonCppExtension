@@ -1,0 +1,13 @@
+[project]
+name = "MyModule"
+version = "0.0.1"
+
+[build-system]
+requires = [
+    "setuptools>=58",
+    "cmake",
+    "ninja; platform_system!='Windows'"
+]
+# "scikit-build" ?
+
+build-backend = "setuptools.build_meta"

@@ -34,7 +34,7 @@ class CMakeBuild(build_ext):
 
             extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
             #cfg = 'Debug' if options['--debug'] == 'ON' else 'Release'
-            cfg = 'Debug'
+            cfg = 'Release'
 
             cmake_args = [
                 '-DCMAKE_BUILD_TYPE=%s' % cfg,
@@ -74,19 +74,16 @@ class CMakeBuild(build_ext):
 
             if not os.path.exists(self.build_temp):
                 os.makedirs(self.build_temp)
-
             # Config
             subprocess.check_call(['cmake', ext.cmake_lists_dir] + cmake_args,
                                   cwd=self.build_temp)
 
             # Build
-            subprocess.check_call(['cmake', '--build', '.', '--config', cfg],
+            subprocess.check_call(['cmake', '--build', '.', '--config', cfg, '--target', ext.name],
                                   cwd=self.build_temp)
 
 
-
-setup(name = "MyModule",
-      version = "0.1",
-      ext_modules = [CMakeExtension("MyModule")],
+# Distutils commands: https://docs.python.org/3/distutils/apiref.html     )
+setup(ext_modules = [CMakeExtension("MyModule")], # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#
       cmdclass = {'build_ext': CMakeBuild}
-      );
+      )
