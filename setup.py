@@ -84,6 +84,16 @@ class CMakeBuild(build_ext):
 
 
 # Distutils commands: https://docs.python.org/3/distutils/apiref.html     )
-setup(ext_modules = [CMakeExtension("MyModule")], # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#
-      cmdclass = {'build_ext': CMakeBuild}
-      )
+# setup(ext_modules = [CMakeExtension("MyModule")], # https://setuptools.pypa.io/en/latest/userguide/ext_modules.html#
+#       cmdclass = {'build_ext': CMakeBuild}
+#       )
+# https://docs.python.org/3/extending/building.html
+
+# Example https://stackoverflow.com/questions/33738885/python-setuptools-not-including-c-standard-library-headers
+MyModule = Extension(
+                        'MyModule',
+                        sources = ['my_py_module.cpp', 'my_class_py_type.cpp'],
+                        extra_compile_args=['-std=c++17']
+                        )
+
+setup(ext_modules = [MyModule])

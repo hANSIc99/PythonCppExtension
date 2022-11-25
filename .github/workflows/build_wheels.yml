@@ -16,8 +16,8 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.2
-        env:
-          CIBW_BEFORE_ALL_LINUX: pip install cmake
+        #env:
+        #  CIBW_BEFORE_ALL_LINUX: pip install cmake
         #   CIBW_SOME_OPTION: value
         #    ...
         # with:

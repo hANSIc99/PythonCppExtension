@@ -13,6 +13,15 @@ add_executable(PyDebug "pydbg.cpp")
 #find_package(PythonLibs REQUIRED)
 #find_package (Python COMPONENTS Development.Module)
 find_package(Python3 COMPONENTS Development.Module)
+
+
+if(Python3_LIBRARIES MATCHES NOTFOUND)
+    set(Python3_LIBRARIES "/usr/local/lib")
+endif()
+
+if(Python3_INCLUDE_DIRS MATCHES NOTFOUND)
+endif()
+
 target_link_libraries(PyDebug ${Python3_LIBRARIES})
 target_link_libraries(MyModule ${Python3_LIBRARIES})
 

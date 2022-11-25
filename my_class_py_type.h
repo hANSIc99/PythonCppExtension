@@ -35,7 +35,7 @@ static PyType_Slot MyClass_slots[] = {
     {0, 0}
 };
 
-static PyType_Spec spec_myclass = {
+[[maybe_unused]] static PyType_Spec spec_myclass = {
     "MyClass",                                  // name
     sizeof(MyClassObject) + sizeof(MyClass),    // basicsize
     0,                                          // itemsize
