@@ -20,6 +20,7 @@ if(Python3_LIBRARIES MATCHES NOTFOUND)
 endif()
 
 if(Python3_INCLUDE_DIRS MATCHES NOTFOUND)
+    set(Python3_INCLUDE_DIRS )
 endif()
 
 target_link_libraries(PyDebug ${Python3_LIBRARIES})
